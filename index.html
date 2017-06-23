@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>三级联动</title>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<style>
+		#box{width: 70%; height: 40px; margin: 50px auto 20px; overflow: hidden;}
+		#box .field{height: 40px; line-height: 40px;}
+	</style>
+</head>
+<body>
+	<div id="box" class="row">
+		<div class="field col-sm-4">
+			<select class="form-control" id="province">
+				<option>省</option>
+			</select>
+		</div>
+		<div class="field col-sm-4">
+			<select class="form-control" id="city">
+				<option>市</option>
+			</select>
+		</div>
+		<div class="field col-sm-4">
+			<select class="form-control" id="district">
+				<option>地区</option>
+			</select>
+		</div>
+	</div>
+	<script src="js/area.js"></script>
+	<script src="js/jquery-2.2.4.js"></script>
+	<script>
+		$(function(){
+			var $prov = $('#province');
+			var $city = $('#city');
+			var $dist = $('#district');
+			var idxProv = null;
+			var idxCity = null;
+			var provStr = '';
+			
+			$.each(data, function(k, v){
+				provStr += "<option>"+v.name+"</option>";
+			});
+			$prov.append(provStr);
+
+			$prov.change(function(){
+				idxProv = $(this).prop("selectedIndex");
+				$city.find("option").eq(0).siblings().remove();
+				$dist.find("option").eq(0).siblings().remove();
+				if(idxProv !== 0){
+					var cityStr = '';
+					for(var i=0; i<data[idxProv-1].city.length; i++){
+						cityStr += "<option>"+data[idxProv-1].city[i].name+"</option>";
+					}
+					$city.append(cityStr);
+				}
+			});	
+
+			$city.change(function(){
+				idxCity = $(this).prop("selectedIndex");
+				$dist.find("option").eq(0).siblings().remove();
+				if(idxCity !== 0){
+					var distStr = '';
+					for(var i=0; i<data[idxProv-1].city[idxCity-1].districtAndCounty.length; i++){
+						distStr += "<option>"+data[idxProv-1].city[idxCity-1].districtAndCounty[i]+"</option>";
+					}
+					$dist.append(distStr);
+				}
+			});
+
+		});
+	</script>
+</body>
+</html>
